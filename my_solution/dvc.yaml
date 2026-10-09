@@ -1,0 +1,16 @@
+stages:
+  download_data:
+    cmd: cd .. && uv run python -m my_solution.src.download_data
+    deps:
+      - src/download_data.py
+      - src/config.py
+    outs:
+      - data/raw
+
+  train_model:
+    cmd: cd .. && uv run python -m my_solution.src.train
+    deps:
+      - src/train.py
+      - src/config.py
+      - data/raw
+      - ../uv.lock

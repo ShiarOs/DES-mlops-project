@@ -1,0 +1,39 @@
+schema: '2.0'
+stages:
+  download_data:
+    cmd: cd .. && uv run python -m my_solution.src.download_data
+    deps:
+    - path: src/config.py
+      hash: md5
+      md5: 05d5e3fbcca5836082f8355b9f81b55e
+      size: 623
+    - path: src/download_data.py
+      hash: md5
+      md5: e743bc56de05216c68936aeea16fbf64
+      size: 1074
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: a9c153941478b5cbeaf8008992daf1ee.dir
+      size: 1362284
+      nfiles: 1
+  train_model:
+    cmd: cd .. && uv run python -m my_solution.src.train
+    deps:
+    - path: ../uv.lock
+      hash: md5
+      md5: 05d7fdb2a3b9c5dc8603879007053c30
+      size: 822375
+    - path: data/raw
+      hash: md5
+      md5: a9c153941478b5cbeaf8008992daf1ee.dir
+      size: 1362284
+      nfiles: 1
+    - path: src/config.py
+      hash: md5
+      md5: 05d5e3fbcca5836082f8355b9f81b55e
+      size: 623
+    - path: src/train.py
+      hash: md5
+      md5: 08b7dca13d724aed6401a12cf9546349
+      size: 4897

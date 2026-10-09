@@ -26,9 +26,15 @@ dev = [
     "httpx>=0.28.1",
     "ipykernel>=7.4.0",
     "ipywidgets>=8.1.9",
+    "pandas-stubs>=3.0.5.260914",
     # MLflow records pip's version when packaging the notebook model.
     "pip>=26.0",
 ]
 
 [tool.rumdl]
 disable = ["MD013"]
+
+[[tool.mypy.overrides]]
+module = ["sklearn.*"]
+ignore_missing_imports = true
+

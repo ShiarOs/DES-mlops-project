@@ -40,3 +40,11 @@ jobs:
       - name: Reproduce the DVC pipeline
         working-directory: my_solution
         run: uv run dvc repro
+
+      - name: Upload MLflow log and model
+        uses: actions/upload-artifact@v4
+        with:
+          name: mlflow-run
+          path: |
+            my_solution/mlflow.db
+            my_solution/models/

@@ -47,6 +47,9 @@ jobs:
       - name: Download data and train (DVC pipeline)
         run: uv run dvc repro
 
+      - name: Smoke test the API
+        run: uv run pytest -v  
+
       - name: Upload model and MLflow logbook
         uses: actions/upload-artifact@v4
         with:

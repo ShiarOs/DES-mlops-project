@@ -5,6 +5,7 @@ Contains functions to train a machine learning model to predict taxi ride durati
 
 from pathlib import Path
 import mlflow
+import joblib
 from mlflow.sklearn import log_model
 import pandas as pd
 from mlflow import MlflowClient
@@ -13,7 +14,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
-from my_solution.src.config import YEAR, COLOR, MONTH, RAW_DATA_PATH, MLFLOW_TRACKING_URI, EXPERIMENT_NAME, TARGET, FEATURES, MODEL_NAME, PRODUCTION_ALIAS
+from my_solution.src.config import YEAR, COLOR, MONTH, RAW_DATA_PATH, MLFLOW_TRACKING_URI, EXPERIMENT_NAME, TARGET, FEATURES, MODEL_NAME, PRODUCTION_ALIAS, MODEL_DIR
 
 
 def setup_mlflow(
@@ -63,6 +64,7 @@ def train_model(
     target: str,
     features: list[str],
     model_name: str,
+    model_dir: Path
 ):
     """
     Trains a linear regression model to predict taxi ride durations.
@@ -96,6 +98,10 @@ def train_model(
             registered_model_name=model_name,
             tags={**tags, "rmse": rmse}
         )
+        
+        model_dir.mkdir(parents=True, exist_ok=True)
+        joblib.dump(pipeline, model_dir / "model.joblib")
+
 
 
 def set_production_model(
@@ -133,6 +139,7 @@ def main(
     features: list[str] = FEATURES,
     model_name: str = MODEL_NAME,
     alias: str = PRODUCTION_ALIAS,
+    model_dir: Path = MODEL_DIR
 ):
     """
     Runs the training pipeline: download, preprocess, train and set the production model.
@@ -150,6 +157,7 @@ def main(
         target=target,
         features=features,
         model_name=model_name,
+        model_dir=model_dir
     )
     set_production_model(alias=alias, registered_model_name=model_name)
     

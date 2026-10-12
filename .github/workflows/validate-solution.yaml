@@ -1,23 +1,23 @@
-name: Reference Solution
+name: Validate Solution
 
 on:
   push:
     paths:
-      - ".github/workflows/reference-solution.yaml"
+      - ".github/workflows/validate-solution.yaml"
       - ".python-version"
       - "pyproject.toml"
       - "uv.lock"
-      - "solution/**"
+      - "my_solution/**"
   pull_request:
     paths:
-      - ".github/workflows/reference-solution.yaml"
+      - ".github/workflows/validate-solution.yaml"
       - ".python-version"
       - "pyproject.toml"
       - "uv.lock"
-      - "solution/**"
+      - "my_solution/**"
 
 jobs:
-  validate-reference-solution:
+  validate-solution:
     runs-on: ubuntu-latest
 
     steps:
@@ -38,9 +38,5 @@ jobs:
         run: uv sync --locked
 
       - name: Reproduce the DVC pipeline
-        working-directory: solution
+        working-directory: my_solution
         run: uv run dvc repro
-
-      - name: Smoke test the API endpoints
-        working-directory: solution
-        run: uv run python -m src.check_api

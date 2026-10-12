@@ -5,8 +5,8 @@ stages:
     deps:
     - path: src/config.py
       hash: md5
-      md5: 05d5e3fbcca5836082f8355b9f81b55e
-      size: 623
+      md5: 689873b655e808cff62dd028670c11a3
+      size: 658
     - path: src/download_data.py
       hash: md5
       md5: e743bc56de05216c68936aeea16fbf64
@@ -31,9 +31,15 @@ stages:
       nfiles: 1
     - path: src/config.py
       hash: md5
-      md5: 05d5e3fbcca5836082f8355b9f81b55e
-      size: 623
+      md5: 689873b655e808cff62dd028670c11a3
+      size: 658
     - path: src/train.py
       hash: md5
-      md5: 08b7dca13d724aed6401a12cf9546349
-      size: 4897
+      md5: 19a6508d2fcd7130f490f6a7392cc851
+      size: 5123
+    outs:
+    - path: models
+      hash: md5
+      md5: 8283f5b567a88ba06cebf37ddd4626ec.dir
+      size: 14514
+      nfiles: 1

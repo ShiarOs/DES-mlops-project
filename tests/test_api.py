@@ -25,3 +25,9 @@ def test_predict_rejects_negative_distance():
     response = client.post("/predict", json={**VALID_TRIP, "trip_distance": -1})
     assert response.status_code == 422
 
+def test_metrics_endpoint_exposes_prediction_counter():
+    client.post("/predict", json=VALID_TRIP)
+    response = client.get("/metrics")
+    assert response.status_code == 200
+    assert "taxi_predictions_total" in response.text
+

@@ -7,7 +7,7 @@ import click
 
 import os
 
-import mlflow
+import mlflow  #load mflow for model tracking
 from dotenv import load_dotenv
 from mlflow import MlflowClient
 

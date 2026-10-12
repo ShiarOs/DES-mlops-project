@@ -1,19 +1,23 @@
 schema: '2.0'
 stages:
   prepare_data:
-    cmd: uv run python -m src.prepare_data
+    cmd: uv run python -m src.prepare_data --year 2024 --month 01
     deps:
     - path: src/prepare_data.py
       hash: md5
       md5: 7b9d165e17eefea6e9d079f4663e2402
       size: 1223
+    params:
+      params.yaml:
+        data.month: '01'
+        data.year: 2024
     outs:
     - path: data/green_tripdata_2024-01.parquet
       hash: md5
       md5: 33f3af0093a4bea95512fbd0df7f1b84
       size: 1362284
   train:
-    cmd: uv run python -m src.train
+    cmd: uv run python -m src.train --year 2024 --month 01
     deps:
     - path: data/green_tripdata_2024-01.parquet
       hash: md5
@@ -35,6 +39,10 @@ stages:
       hash: md5
       md5: eb2b9e1a29411888d4018fa8220980e9
       size: 821512
+    params:
+      params.yaml:
+        data.month: '01'
+        data.year: 2024
     outs:
     - path: models/model.joblib
       hash: md5

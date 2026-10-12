@@ -1,0 +1,54 @@
+name: Taxi model training
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "src/train.py"
+      - "data/green_tripdata_2024-01.parquet.dvc"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/taxi-training.yaml"
+
+permissions:
+  contents: read
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv and Python
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Install locked dependencies
+        run: uv sync --locked
+
+      - name: Download training data
+        run: |
+          mkdir -p data
+          curl --fail --location --retry 3 \
+            https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_2024-01.parquet \
+            --output data/green_tripdata_2024-01.parquet
+
+      - name: Verify training data with DVC
+        run: uv run dvc status
+
+      - name: Train and log model
+        run: uv run python -m src.train
+
+      - name: Save MLflow run files
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: taxi-mlflow-run
+          path: |
+            mlflow.db
+            mlruns/
+          if-no-files-found: ignore

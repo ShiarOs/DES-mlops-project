@@ -48,3 +48,4 @@ jobs:
           path: |
             my_solution/mlflow.db
             my_solution/models/
+            my_solution/mlruns/

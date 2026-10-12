@@ -14,12 +14,13 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import root_mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
-from my_solution.src.config import YEAR, COLOR, MONTH, RAW_DATA_PATH, MLFLOW_TRACKING_URI, EXPERIMENT_NAME, TARGET, FEATURES, MODEL_NAME, PRODUCTION_ALIAS, MODEL_DIR
+from my_solution.src.config import YEAR, COLOR, MONTH, RAW_DATA_PATH, MLFLOW_TRACKING_URI, EXPERIMENT_NAME, TARGET, FEATURES, MODEL_NAME, PRODUCTION_ALIAS, MODEL_DIR, MLFLOW_ARTIFACT_LOCATION_URI
 
 
 def setup_mlflow(
     mlflow_tracking_uri: str,
     experiment_name: str,
+    artifact_location_uri
 ):
     """
     Sets up the mlflow experiment (if not already there) and instatiates the tracking uri
@@ -29,6 +30,7 @@ def setup_mlflow(
     if experiment is None:
         experiment_id = mlflow.create_experiment(
             name=experiment_name,
+            artifact_location=artifact_location_uri,
         )
         print(f"Created experiment: {experiment_name} (ID: {experiment_id})")
     else:
@@ -139,13 +141,16 @@ def main(
     features: list[str] = FEATURES,
     model_name: str = MODEL_NAME,
     alias: str = PRODUCTION_ALIAS,
-    model_dir: Path = MODEL_DIR
+    model_dir: Path = MODEL_DIR,
+    artifact_location_uri = MLFLOW_ARTIFACT_LOCATION_URI
 ):
     """
     Runs the training pipeline: download, preprocess, train and set the production model.
     """
     setup_mlflow(
-        mlflow_tracking_uri=mlflow_tracking_uri, experiment_name=experiment_name
+        mlflow_tracking_uri=mlflow_tracking_uri, 
+        experiment_name=experiment_name,
+        artifact_location_uri=artifact_location_uri
     )
     data_path = raw_data_path / f"{color}_tripdata_{year}-{month:02d}.parquet"
     df = preprocess(pd.read_parquet(data_path), target=target, features=features)

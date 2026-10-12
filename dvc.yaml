@@ -1,0 +1,25 @@
+stages:
+  prepare_data:
+    cmd: uv run python -m src.prepare_data --year ${data.year} --month ${data.month}
+    params:
+      - data.year
+      - data.month
+    deps:
+      - src/prepare_data.py
+    outs:
+      - data/green_tripdata_${data.year}-${data.month}.parquet
+
+  train:
+    cmd: uv run python -m src.train --year ${data.year} --month ${data.month}
+    params:
+      - data.year
+      - data.month  
+    deps:
+      - src/prepare_data.py
+      - src/preprocess.py
+      - src/train.py
+      - data/green_tripdata_${data.year}-${data.month}.parquet
+      - uv.lock
+    outs:
+      - models/model.joblib
+

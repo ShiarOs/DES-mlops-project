@@ -1,0 +1,62 @@
+name: Train taxi model
+
+on:
+  push:
+    paths:
+      - ".github/workflows/train.yaml"
+      - ".python-version"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/**"
+      - "dvc.yaml"
+      - "dvc.lock"
+      - "params.yaml"
+  pull_request:
+    paths:
+      - ".github/workflows/train.yaml"
+      - ".python-version"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/**"
+      - "dvc.yaml"
+      - "dvc.lock"
+      - "params.yaml"
+  workflow_dispatch:
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.2.0
+        with:
+          version: "0.11.19"
+
+      - name: Install project dependencies
+        run: uv sync --locked
+
+      - name: Download data and train (DVC pipeline)
+        run: uv run dvc repro
+
+      - name: Smoke test the API
+        run: uv run pytest -v  
+
+      - name: Upload model and MLflow logbook
+        uses: actions/upload-artifact@v4
+        with:
+          name: training-outputs
+          path: |
+            dvc.lock
+            models/
+            mlflow.db
+            mlruns/
+
